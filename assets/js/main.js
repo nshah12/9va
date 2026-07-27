@@ -76,5 +76,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearEl = document.querySelector('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* orbit diagram gentle rotation pause-on-hover handled purely by CSS if added */
+  /* contact form — Web3Forms, submitted via fetch so the page never reloads */
+  const contactForm = document.querySelector('#contact-form');
+  if (contactForm) {
+    const successBox = document.querySelector('#form-success');
+    const errorBox = document.querySelector('#form-error');
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const submitLabel = submitBtn ? submitBtn.innerHTML : '';
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (contactForm.querySelector('.botcheck')?.checked) return; // bot trap
+
+      if (errorBox) errorBox.style.display = 'none';
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+
+      try {
+        const res = await fetch(contactForm.action, {
+          method: 'POST',
+          body: new FormData(contactForm),
+          headers: { Accept: 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+          contactForm.style.display = 'none';
+          if (successBox) successBox.style.display = 'block';
+        } else {
+          throw new Error(data.message || 'submission failed');
+        }
+      } catch (err) {
+        if (errorBox) errorBox.style.display = 'block';
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = submitLabel; }
+      }
+    });
+  }
 });

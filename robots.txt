@@ -31,4 +31,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://www.9va.in/sitemap.xml
+Sitemap: https://9va.in/sitemap.xml
