@@ -61,6 +61,29 @@ ul{list-style:none}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 em,i{font-family:'Fraunces',serif;font-style:italic}
 
+.skip-link{
+  position:absolute;
+  left:-9999px;
+  top:auto;
+  width:1px;height:1px;
+  overflow:hidden;
+  z-index:999;
+}
+.skip-link:focus{
+  position:fixed;
+  left:16px;top:16px;
+  width:auto;height:auto;
+  padding:12px 20px;
+  background:var(--ink);
+  color:var(--text-inverse);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:0.02em;
+  border-radius:var(--radius-sm);
+  box-shadow:0 8px 24px rgba(0,0,0,0.25);
+}
+
 h1,h2,h3,h4,.display{
   font-family:'Fraunces',Georgia,serif;
   font-weight:560;
