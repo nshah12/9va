@@ -110,4 +110,63 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  /* why-9va journey panel — traveling pulse, synced node glow, hover detail */
+  const whyPath = document.querySelector('#whyPath');
+  const whyDot = document.querySelector('#whyDot');
+  if (whyPath && whyDot) {
+    const whyNodes = document.querySelectorAll('.why-node');
+    const whyColors = ['#AF441F', '#3F5B73', '#A8721F', '#AF441F', '#3F5B73', '#A8721F'];
+    const whyLabels = ['PLATFORMS', 'METHOD', 'ACCESS', 'COMMS', 'DEPTH', 'TERMS'];
+    const whyDetails = [
+      "ASTRA, BizCollect and PRANA are live, in-production platforms serving real users today — not prototypes or slide-deck concepts. Every capability we describe is something we've already shipped and operate ourselves.",
+      "Every engagement follows the same model: Consulting identifies what needs to change in the business, then Engineering and AI build the platform that makes it real — on one shared foundation of reusable assets, not a one-off build.",
+      "There's no account manager layer at 9VA. Jitendra and Nilesh are personally involved in scoping, delivery and every major decision on your engagement — the people who built the model are the people you work with.",
+      "You get one point of contact for the life of the engagement, a response within 24 hours as standard, and no sales pitches disguised as check-ins — just the conversation you actually need.",
+      "9VA doesn't cover six industries shallowly. Our expertise is concentrated in banking, regulation, capital markets, platform engineering and AI — mastered through 25+ years of hands-on work, not a generalist checklist.",
+      "Scope, engagement model and pricing are agreed before any work begins — no retainer traps, no scope creep billed after the fact. You know what you're committing to upfront."
+    ];
+    const whyNumEl = document.querySelector('#whyNum');
+    const whyTextEl = document.querySelector('#whyText');
+    const whyFractions = [0, 0.2, 0.4, 0.6, 0.8, 1];
+    const whyTotal = whyPath.getTotalLength();
+    const whyDuration = 16000; // ms — slow, deliberate pass
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let whyHovering = -1;
+    let whyStart = null;
+
+    function whyShowDetail(i) {
+      if (!whyNumEl || !whyTextEl) return;
+      whyNumEl.textContent = '0' + (i + 1);
+      whyNumEl.style.background = whyColors[i];
+      whyNumEl.style.color = '#FBF8F1';
+      whyTextEl.innerHTML = '<b>' + whyLabels[i] + '</b> — ' + whyDetails[i];
+    }
+
+    whyNodes.forEach((n) => {
+      const i = parseInt(n.dataset.i, 10);
+      n.addEventListener('mouseenter', () => { whyHovering = i; whyShowDetail(i); n.style.filter = `drop-shadow(0 0 8px ${whyColors[i]})`; });
+      n.addEventListener('mouseleave', () => { whyHovering = -1; });
+    });
+
+    if (!prefersReducedMotion) {
+      const whyFrame = (ts) => {
+        if (!whyStart) whyStart = ts;
+        const frac = ((ts - whyStart) % whyDuration) / whyDuration;
+        const pt = whyPath.getPointAtLength(frac * whyTotal);
+        whyDot.setAttribute('cx', pt.x);
+        whyDot.setAttribute('cy', pt.y);
+        whyNodes.forEach((n) => {
+          const i = parseInt(n.dataset.i, 10);
+          if (i === whyHovering) return;
+          const dist = Math.min(Math.abs(frac - whyFractions[i]), Math.abs(frac - whyFractions[i] - 1));
+          n.style.filter = dist < 0.02 ? `drop-shadow(0 0 8px ${whyColors[i]})` : 'none';
+        });
+        requestAnimationFrame(whyFrame);
+      };
+      requestAnimationFrame(whyFrame);
+    } else {
+      whyDot.style.display = 'none';
+    }
+  }
 });
